@@ -3,7 +3,7 @@ name: Build and Push to GHCR
 on:
   push:
     branches:
-      - main  # Jalankan workflow saat push ke branch 'main'
+      - master  # Jalankan workflow saat push ke branch 'main'
 
 jobs:
   build-and-push:
