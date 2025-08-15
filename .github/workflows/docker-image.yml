@@ -1,0 +1,36 @@
+name: Build and Push to GHCR
+
+on:
+  push:
+    branches:
+      - main  # Jalankan workflow saat push ke branch 'main'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract image name
+        id: extract_image
+        run: echo "IMAGE=ghcr.io/${{ github.repository_owner }}/bandwidth-hero-proxy" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE }}:latest
